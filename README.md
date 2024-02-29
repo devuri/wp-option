@@ -70,7 +70,7 @@ $optionBridge->delete_option('my_custom_option');
 
 ### Customizing Option Retrieval
 
-The `WP_OptionBridge` class is designed with flexibility in mind, allowing developers to inject a custom function for retrieving option values. This is particularly useful for unit testing, where you might want to isolate the class from the WordPress database, or for integrating with a custom caching layer or option storage mechanism.
+The `WPOptionBridge` class is designed with flexibility in mind, allowing developers to inject a custom function for retrieving option values. This is particularly useful for unit testing, where you might want to isolate the class from the WordPress database, or for integrating with a custom caching layer or option storage mechanism.
 
 #### Using a Custom Callable
 
