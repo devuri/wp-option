@@ -31,7 +31,7 @@ class WPOptionBridge {
      */
     public function get_option($option_name, $default = false) {
         if (!is_string($option_name)) {
-            error_log("WP_OptionBridge: Option name must be a string. Given: " . gettype($option_name));
+            error_log("WPOptionBridge: Option name must be a string. Given: " . gettype($option_name));
             return $default;
         }
 
@@ -47,7 +47,7 @@ class WPOptionBridge {
      */
     public function add_option($option_name, $value) {
         if (!is_string($option_name)) {
-            error_log("WP_OptionBridge: Option name must be a string for adding. Given: " . gettype($option_name));
+            error_log("WPOptionBridge: Option name must be a string for adding. Given: " . gettype($option_name));
             return false;
         }
 
@@ -63,7 +63,7 @@ class WPOptionBridge {
      */
     public function update_option($option_name, $value) {
         if (!is_string($option_name)) {
-            error_log("WP_OptionBridge: Option name must be a string for updating. Given: " . gettype($option_name));
+            error_log("WPOptionBridge: Option name must be a string for updating. Given: " . gettype($option_name));
             return false;
         }
 
@@ -78,7 +78,7 @@ class WPOptionBridge {
      */
     public function delete_option($option_name) {
         if (!is_string($option_name)) {
-            error_log("WP_OptionBridge: Option name must be a string for deletion. Given: " . gettype($option_name));
+            error_log("WPOptionBridge: Option name must be a string for deletion. Given: " . gettype($option_name));
             return false;
         }
 
