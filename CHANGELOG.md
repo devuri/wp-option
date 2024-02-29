@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/devuri/wp-option/compare/v0.3.0...v0.3.1) (2024-02-29)
+
+
+### Bug Fixes
+
+* provide maximum flexibility ([6214565](https://github.com/devuri/wp-option/commit/6214565759283fe56efb04ebeb1730b7c58c8450))
+
 ## [0.3.0](https://github.com/devuri/wp-option/compare/v0.2.3...v0.3.0) (2024-02-29)
 
 
