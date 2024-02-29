@@ -74,7 +74,7 @@ The `WPOptionBridge` class is designed with flexibility in mind, allowing develo
 
 #### Using a Custom Callable
 
-The constructor of the `WPOptionBridge` accepts a `callable` parameter that replaces the default WordPress `get_option` function. A `callable` in PHP is something that can be called as a function. This includes actual functions, static class methods, and object methods, among others.
+The set_option_getter of `WPOptionBridge` accepts a `callable` parameter that replaces the default WordPress `get_option` function. A `callable` in PHP is something that can be called as a function. This includes actual functions, static class methods, and object methods, among others.
 
 Here's how you can utilize this feature:
 
@@ -91,8 +91,12 @@ $customOptionGetter = function($option_name, $default = false) {
     return $value !== null ? $value : $default;
 };
 
-// Pass the custom callable to the constructor.
-$optionBridge = new WPOptionBridge($customOptionGetter);
+
+$optionBridge = new Urisoft\WPOptionBridge();
+
+// Set a custom option getter
+$optionBridge->set_option_getter($customOptionGetter);
+
 ```
 
 In this example, `$customOptionGetter` is a custom function defined to retrieve option values. When creating a new instance of `WPOptionBridge`, you pass this function as an argument. The class will then use this function instead of the default `get_option` WordPress function whenever `get_option` is called.
