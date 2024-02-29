@@ -114,5 +114,5 @@ Contributions are welcome! Please read our [contributing guide](CONTRIBUTING.md)
 
 ## License
 
-The `WP Option Bridge` is open-sourced software licensed under the [MIT license](LICENSE.md).
+The `WP Option Bridge` is open-sourced software licensed under the [MIT license](LICENSE).
 
