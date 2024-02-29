@@ -5,8 +5,8 @@ namespace Urisoft;
 /**
  * WPOptionBridge Class
  *
- * Serves as a comprehensive interface for managing WordPress options,
- * providing object-oriented access to get, add, update, and delete operations.
+ * Provides an object-oriented interface for managing WordPress options,
+ * facilitating get, add, update, and delete operations with enhanced flexibility.
  */
 class WPOptionBridge {
 
@@ -16,10 +16,25 @@ class WPOptionBridge {
      * Constructor
      * Allows for dependency injection to facilitate testing and flexibility.
      *
-     * @param callable $optionGetter Function to retrieve an option. Defaults to WordPress's get_option.
+     * @param callable $optionGetter Custom function for option retrieval. Defaults to WordPress's get_option.
      */
     public function __construct(callable $optionGetter = 'get_option') {
         $this->optionGetter = $optionGetter;
+    }
+
+    /**
+     * Validates the option name.
+     *
+     * @param mixed $option_name The option name to validate.
+     * @return bool True if valid, false otherwise.
+     */
+    protected function validate_option_name($option_name) {
+        if (!is_string($option_name)) {
+            error_log("WPOptionBridge: Option name must be a string. Given: " . gettype($option_name));
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -30,8 +45,7 @@ class WPOptionBridge {
      * @return mixed The value of the option, or default if the option does not exist.
      */
     public function get_option($option_name, $default = false) {
-        if (!is_string($option_name)) {
-            error_log("WPOptionBridge: Option name must be a string. Given: " . gettype($option_name));
+        if (!$this->validate_option_name($option_name)) {
             return $default;
         }
 
@@ -46,8 +60,7 @@ class WPOptionBridge {
      * @return bool True if option was added, false otherwise.
      */
     public function add_option($option_name, $value) {
-        if (!is_string($option_name)) {
-            error_log("WPOptionBridge: Option name must be a string for adding. Given: " . gettype($option_name));
+        if (!$this->validate_option_name($option_name)) {
             return false;
         }
 
@@ -62,8 +75,7 @@ class WPOptionBridge {
      * @return bool True if option was updated, false otherwise.
      */
     public function update_option($option_name, $value) {
-        if (!is_string($option_name)) {
-            error_log("WPOptionBridge: Option name must be a string for updating. Given: " . gettype($option_name));
+        if (!$this->validate_option_name($option_name)) {
             return false;
         }
 
@@ -77,8 +89,7 @@ class WPOptionBridge {
      * @return bool True if the option was deleted, false otherwise.
      */
     public function delete_option($option_name) {
-        if (!is_string($option_name)) {
-            error_log("WPOptionBridge: Option name must be a string for deletion. Given: " . gettype($option_name));
+        if (!$this->validate_option_name($option_name)) {
             return false;
         }
 
