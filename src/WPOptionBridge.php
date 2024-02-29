@@ -11,15 +11,44 @@ namespace Urisoft;
 class WPOptionBridge {
 
     protected $optionGetter;
+    protected $optionAdder;
+    protected $optionUpdater;
+    protected $optionDeleter;
 
     /**
-     * Sets the function used to retrieve options. Defaults to WordPress's get_option
-     * if no function is set explicitly.
+     * Sets the function used to retrieve options.
      *
      * @param callable $optionGetter Function to retrieve an option.
      */
     public function set_option_getter(callable $optionGetter) {
         $this->optionGetter = $optionGetter;
+    }
+
+    /**
+     * Sets the function used to add options.
+     *
+     * @param callable $optionAdder Function to add an option.
+     */
+    public function set_option_adder(callable $optionAdder) {
+        $this->optionAdder = $optionAdder;
+    }
+
+    /**
+     * Sets the function used to update options.
+     *
+     * @param callable $optionUpdater Function to update an option.
+     */
+    public function set_option_updater(callable $optionUpdater) {
+        $this->optionUpdater = $optionUpdater;
+    }
+
+    /**
+     * Sets the function used to delete options.
+     *
+     * @param callable $optionDeleter Function to delete an option.
+     */
+    public function set_option_deleter(callable $optionDeleter) {
+        $this->optionDeleter = $optionDeleter;
     }
 
     /**
@@ -61,11 +90,12 @@ class WPOptionBridge {
      * @return bool True if option was added, false otherwise.
      */
     public function add_option($option_name, $value) {
+        $adder = $this->optionAdder ?? 'add_option';
         if (!$this->validate_option_name($option_name)) {
             return false;
         }
 
-        return add_option($option_name, $value);
+        return call_user_func($adder, $option_name, $value);
     }
 
     /**
@@ -76,11 +106,12 @@ class WPOptionBridge {
      * @return bool True if option was updated, false otherwise.
      */
     public function update_option($option_name, $value) {
+        $updater = $this->optionUpdater ?? 'update_option';
         if (!$this->validate_option_name($option_name)) {
             return false;
         }
 
-        return update_option($option_name, $value);
+        return call_user_func($updater, $option_name, $value);
     }
 
     /**
@@ -90,10 +121,11 @@ class WPOptionBridge {
      * @return bool True if the option was deleted, false otherwise.
      */
     public function delete_option($option_name) {
+        $deleter = $this->optionDeleter ?? 'delete_option';
         if (!$this->validate_option_name($option_name)) {
             return false;
         }
 
-        return delete_option($option_name);
+        return call_user_func($deleter, $option_name);
     }
 }
