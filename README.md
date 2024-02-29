@@ -1,167 +1,118 @@
-# DotAccess - Convenient Access to Nested Data Using Dot Notation
+# WP Option Bridge
 
-The `DotAccess` class provides a user-friendly wrapper around the functionality of the `Dflydev\DotAccessData\Data` package, allowing easy access to nested data using dot notation in PHP.
+`WP Option` is a PHP package designed to provide an object-oriented interface for managing WordPress options, simplifying the process of getting, adding, updating, and deleting options within WordPress. It acts as a `bridge` to the WordPress options API, enhancing code readability and maintainability.
+
+## Features
+
+- **Object-Oriented Approach**: Encapsulates WordPress option management in a single, cohesive class.
+- **Dependency Injection**: Facilitates testing and flexibility by allowing custom functions for getting options.
+- **Comprehensive Option Management**: Supports get, add, update, and delete operations for WordPress options.
+- **Error Logging**: Basic error logging for input validation, aiding in debugging and issue resolution.
+
+## Requirements
+
+- PHP 7.2 or higher
+- WordPress 4.7 or higher
 
 ## Installation
 
-1. Ensure you have [Composer](https://getcomposer.org/) installed on your system.
-2. Run the following command to install the package:
+Install the package via Composer:
 
 ```bash
-composer require devuri/dot-access
+composer require devuri/wp-option
 ```
 
-## Getting Started
+## Usage
 
-1. Include the `DotAccess` class in your PHP script:
+### Initialization
+
+First, import the `WPOptionBridge` class and instantiate it:
 
 ```php
+use Urisoft\WPOptionBridge;
 
-use Urisoft\DotAccess;
-
+$optionBridge = new WPOptionBridge();
 ```
 
-2. Create an instance of the `DotAccess` class and pass the nested data (array or object) to the constructor:
+### Getting an Option
+
+Retrieve an option value using the `get_option` method:
 
 ```php
-$data = [
-    'user' => [
-        'name' => 'John Doe',
-        'email' => 'john.doe@example.com',
-        'address' => [
-            'city' => 'New York',
-            'country' => 'USA',
-        ],
-    ],
-];
-
-$dotdata = new DotAccess($data);
+$siteName = $optionBridge->get_option('blogname', 'Default Site Name');
 ```
 
-## Accessing Data
+### Adding an Option
 
-The `DotAccess` class provides the following methods to access the nested data using dot notation:
-
-### Get the Value
-
-Use the `get()` method to retrieve the value associated with a dot notation key:
+Add a new option using the `add_option` method:
 
 ```php
-$name = $dotdata->get('user.name');
-$email = $dotdata->get('user.email');
-$city = $dotdata->get('user.address.city');
+$optionBridge->add_option('my_custom_option', 'My Custom Value');
 ```
 
-### Set the Value
+### Updating an Option
 
-Use the `set()` method to set a value for a dot notation key:
+Update an existing option using the `update_option` method:
 
 ```php
-$dotdata->set('user.age', 30);
+$optionBridge->update_option('my_custom_option', 'Updated Custom Value');
 ```
 
-### Checking for Key Existence
+### Deleting an Option
 
-Use the `has()` method to check if a dot notation key exists in the data:
+Delete an option using the `delete_option` method:
 
 ```php
-$emailExists = $dotdata->has('user.email');
+$optionBridge->delete_option('my_custom_option');
 ```
 
-### Removing a Key
+## Advanced Usage
 
-Use the `remove()` method to unset the value associated with a dot notation key:
+### Customizing Option Retrieval
+
+The `WP_OptionBridge` class is designed with flexibility in mind, allowing developers to inject a custom function for retrieving option values. This is particularly useful for unit testing, where you might want to isolate the class from the WordPress database, or for integrating with a custom caching layer or option storage mechanism.
+
+#### Using a Custom Callable
+
+The constructor of the `WP_OptionBridge` accepts a `callable` parameter that replaces the default WordPress `get_option` function. A `callable` in PHP is something that can be called as a function. This includes actual functions, static class methods, and object methods, among others.
+
+Here's how you can utilize this feature:
 
 ```php
-$dotdata->remove('user.address.country');
+use Urisoft\WPOptionBridge;
+
+// Define a custom function for getting options.
+// This is a simple example that mimics the get_option behavior.
+$customOptionGetter = function($option_name, $default = false) {
+    // Custom logic to retrieve an option value
+    // For example, you might want to check a local cache first
+    $value = /* your custom retrieval logic */;
+
+    return $value !== null ? $value : $default;
+};
+
+// Pass the custom callable to the constructor.
+$optionBridge = new WPOptionBridge($customOptionGetter);
 ```
 
-## Example
+In this example, `$customOptionGetter` is a custom function defined to retrieve option values. When creating a new instance of `WPOptionBridge`, you pass this function as an argument. The class will then use this function instead of the default `get_option` WordPress function whenever `get_option` is called.
 
-```php
-$data = [
-    'user' => [
-        'name' => 'John Doe',
-        'email' => 'john.doe@example.com',
-        'address' => [
-            'city' => 'New York',
-            'country' => 'USA',
-        ],
-    ],
-];
+### Use Cases for a Custom Callable
 
-$dotdata = new DotAccess($data);
+- **Unit Testing**: By injecting a custom function that returns predefined values, you can test the behavior of your code that uses `WPOptionBridge` without relying on a WordPress environment or database.
+- **Caching**: If your application has a custom caching layer for options, you can inject a function that first checks the cache before falling back to the database.
+- **Custom Storage**: For applications that store options outside of the WordPress database (like in a different database or a file), you can use this feature to integrate `WPOptionBridge` with your storage mechanism.
 
-$name = $dotdata->get('user.name'); // Output: "John Doe"
-$dotdata->set('user.age', 30);
-$emailExists = $dotdata->has('user.email'); // Output: true
-$dotdata->remove('user.address.country');
+### Best Practices
 
-echo "Name: $name\n";
-echo "Age: " . $dotdata->get('user.age') . "\n";
-echo "Email exists: " . ($emailExists ? 'Yes' : 'No') . "\n";
-```
+- Ensure your custom callable matches the expected signature: it should accept an option name and an optional default value, returning the option value if found, or the default if not.
+- When using this feature for caching, make sure to handle cache invalidation appropriately to avoid stale data issues.
 
-## Wrapper Function - DataKey:get()
+## Contributing
 
-In addition to the `DotAccess` class, we also provide a standalone wrapper function `DataKey` that simplifies accessing nested data using dot notation.
-
-### Usage
-
-The `DataKey:get()` function allows you to quickly access nested data without having to create an instance of the `DotAccess` class. It takes three parameters:
-
-1. The data array or object to access.
-2. The dot notation key to access the data.
-3. An optional default value to return if the key is not found.
-
-Here's how you can use the `DataKey:get()` function:
-
-```php
-$data = [
-    'user' => [
-        'name' => 'John Doe',
-        'email' => 'john.doe@example.com',
-        'address' => [
-            'city' => 'New York',
-            'country' => 'USA',
-        ],
-    ],
-];
-
-// Using the wrapper function
-$name = DataKey:get($data, 'user.name');
-$email = DataKey:get($data, 'user.email');
-$city = DataKey:get($data, 'user.address.city');
-$zipCode = DataKey:get($data, 'user.address.zip_code', 'N/A'); // Provide a default value if the key doesn't exist
-
-echo "Name: $name\n";
-echo "Email: $email\n";
-echo "City: $city\n";
-echo "Zip Code: $zipCode\n";
-```
-
-### When to Use `DataKey:get()` vs. `DotAccess`
-
-Both the `DataKey:get()` function and the `DotAccess` class serve the same purpose: accessing nested data using dot notation. The choice between them depends on your specific use case and coding preferences.
-
-Use `DataKey:get()` when:
-
-- You prefer a simple function call over creating an instance of the `DotAccess` class.
-- You only need to access nested data at a few specific points in your code.
-- You don't need to perform multiple operations (e.g., setting, checking, or removing keys).
-
-Use `DotAccess` class when:
-
-- You need to perform multiple operations on the same nested data within your code.
-- You prefer an object-oriented approach for handling nested data.
-- You need better encapsulation and separation of concerns in your code.
-
-Both approaches provide a convenient and user-friendly way to work with nested data using dot notation. Choose the one that best fits your coding style and requirements.
+Contributions are welcome! Please read our [contributing guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+The `WP Option Bridge` is open-sourced software licensed under the [MIT license](LICENSE.md).
 
-## Acknowledgments
-
-The `DotAccess` class is a simple wrapper around the `Dflydev\DotAccessData\Data` package, which provides the core functionality for accessing nested data using dot notation. Special thanks to the authors of the `Dflydev\DotAccessData` package for their excellent work.
