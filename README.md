@@ -112,6 +112,58 @@ In this example, `$customOptionGetter` is a custom function defined to retrieve 
 - Ensure your custom callable matches the expected signature: it should accept an option name and an optional default value, returning the option value if found, or the default if not.
 - When using this feature for caching, make sure to handle cache invalidation appropriately to avoid stale data issues.
 
+## Customizing Option Management
+
+The class offers full flexibility in managing WordPress options by allowing you to define custom functions for option operations. This is particularly useful for scenarios like unit testing, integrating with caching systems, or using a custom storage mechanism for WordPress options.
+
+### Setting Custom Functions
+
+You can set custom functions for each operation using the following methods:
+
+- `set_option_getter(callable $function)`: Customize how options are retrieved.
+- `set_option_adder(callable $function)`: Customize how options are added.
+- `set_option_updater(callable $function)`: Customize how options are updated.
+- `set_option_deleter(callable $function)`: Customize how options are deleted.
+
+Each method accepts a `callable` argument, which should be a function that matches the expected signature of the corresponding WordPress function.
+
+### Example
+
+```php
+use Urisoft\WPOptionBridge;
+
+$optionBridge = new WPOptionBridge();
+
+// Custom function for retrieving options
+$optionBridge->set_option_getter(function($name, $default = false) {
+    // Custom logic to retrieve an option
+});
+
+// Custom function for adding options
+$optionBridge->set_option_adder(function($name, $value) {
+    // Custom logic to add an option
+});
+
+// Custom function for updating options
+$optionBridge->set_option_updater(function($name, $value) {
+    // Custom logic to update an option
+});
+
+// Custom function for deleting options
+$optionBridge->set_option_deleter(function($name) {
+    // Custom logic to delete an option
+});
+```
+
+### Use Cases
+
+- **Unit Testing**: Mock the option functions to test your application logic without interacting with the database.
+- **Caching**: Implement custom getters and setters that work with a caching layer to reduce database load.
+- **Custom Storage**: Integrate with a custom storage system for WordPress options, such as an external database or a file-based storage system.
+
+> leveraging these customization capabilities, `WPOptionBridge` becomes an adaptable tool that can fit into various architectures and testing environments, enhancing the modularity and testability of your WordPress projects.
+
+
 ## Contributing
 
 Contributions are welcome! Please read our [contributing guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
