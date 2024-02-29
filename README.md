@@ -1,6 +1,6 @@
 # WP Option Bridge
 
-`WP Option` is a PHP package designed to provide an object-oriented interface for managing WordPress options, simplifying the process of getting, adding, updating, and deleting options within WordPress. It acts as a `bridge` to the WordPress options API, enhancing code readability and maintainability.
+`WP Option` is designed to provide an object-oriented interface for managing WordPress options, simplifying the process of getting, adding, updating, and deleting options within WordPress. It acts as a `bridge` to the WordPress options API, enhancing code readability and maintainability.
 
 ## Features
 
