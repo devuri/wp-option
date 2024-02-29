@@ -13,12 +13,12 @@ class WPOptionBridge {
     protected $optionGetter;
 
     /**
-     * Constructor
-     * Allows for dependency injection to facilitate testing and flexibility.
+     * Sets the function used to retrieve options. Defaults to WordPress's get_option
+     * if no function is set explicitly.
      *
-     * @param callable $optionGetter Custom function for option retrieval. Defaults to WordPress's get_option.
+     * @param callable $optionGetter Function to retrieve an option.
      */
-    public function __construct(callable $optionGetter = 'get_option') {
+    public function set_option_getter(callable $optionGetter) {
         $this->optionGetter = $optionGetter;
     }
 
@@ -45,11 +45,12 @@ class WPOptionBridge {
      * @return mixed The value of the option, or default if the option does not exist.
      */
     public function get_option($option_name, $default = false) {
+        $getter = $this->optionGetter ?? 'get_option';
         if (!$this->validate_option_name($option_name)) {
             return $default;
         }
 
-        return call_user_func($this->optionGetter, $option_name, $default);
+        return call_user_func($getter, $option_name, $default);
     }
 
     /**
